@@ -1,0 +1,10 @@
+app = "tiktok-stream-bot"
+
+[build]
+
+[env]
+
+[vm]
+  memory = 256
+  cpu_kind = "shared"
+  cpus = 1
