@@ -6,7 +6,8 @@ while true; do
   while read URL; do
     echo "Streaming $URL"
 
-    ffmpeg -re -fflags +genpts -i "$URL" \
+    streamlink -O "$URL" best | \
+    ffmpeg -re -i pipe:0 \
       -vf "fps=60,scale=720:1280:force_original_aspect_ratio=decrease,\
 pad=720:1280:(ow-iw)/2:(oh-ih)/2" \
       -c:v libx264 -preset veryfast -tune zerolatency \
@@ -16,6 +17,6 @@ pad=720:1280:(ow-iw)/2:(oh-ih)/2" \
       -f flv "$RTMP"
 
     echo "Switching..."
-    sleep 0.5
+    sleep 1
   done < videos.txt
 done
