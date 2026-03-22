@@ -6,7 +6,8 @@ while true; do
   while read URL; do
     echo "Streaming $URL"
 
-    streamlink -O "$URL" best | \
+    # tapetaan stream 5min jälkeen (tai kun video loppuu)
+    timeout 300 streamlink -O "$URL" best | \
     ffmpeg -re -i pipe:0 \
       -vf "fps=60,scale=720:1280:force_original_aspect_ratio=decrease,\
 pad=720:1280:(ow-iw)/2:(oh-ih)/2" \
@@ -16,7 +17,7 @@ pad=720:1280:(ow-iw)/2:(oh-ih)/2" \
       -c:a aac -b:a 128k \
       -f flv "$RTMP"
 
-    echo "Switching..."
+    echo "Switching video..."
     sleep 1
   done < videos.txt
 done
