@@ -1,6 +1,6 @@
 FROM jrottenberg/ffmpeg:6.0-ubuntu
 
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y wget
 
 WORKDIR /app
 
@@ -9,4 +9,5 @@ COPY videos.txt .
 
 RUN chmod +x start.sh
 
+ENTRYPOINT []
 CMD ["sh", "./start.sh"]
