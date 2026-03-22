@@ -10,18 +10,16 @@ while true; do
 
     [ -z "$url" ] && continue
 
-    echo "▶️ $url"
+    echo "⬇️ ladataan: $url"
+
+    # lataa video temp tiedostoon
+    curl -L --retry 5 --retry-delay 3 "$url" -o video.mp4
+
+    echo "▶️ striimataan..."
 
     ffmpeg -re \
-    -user_agent "Mozilla/5.0" \
-    -headers "Connection: keep-alive" \
-    -reconnect 1 \
-    -reconnect_streamed 1 \
-    -reconnect_delay_max 10 \
-    -rw_timeout 15000000 \
-    -thread_queue_size 512 \
-    -fflags +genpts+discardcorrupt \
-    -i "$url" \
+    -stream_loop -1 \
+    -i video.mp4 \
     -vf "scale=1920:1080:force_original_aspect_ratio=decrease,\
 pad=1920:1080:(ow-iw)/2:(oh-ih)/2,fps=60" \
     -c:v libx264 -preset veryfast \
@@ -32,7 +30,10 @@ pad=1920:1080:(ow-iw)/2:(oh-ih)/2,fps=60" \
     -c:a aac -b:a 160k \
     -f flv "$RTMP_URL/$STREAM_KEY"
 
-    echo "⚠️ valmis / error → seuraava"
+    echo "🧹 poistetaan tiedosto"
+    rm -f video.mp4
+
+    echo "⚠️ valmis → seuraava"
     sleep 2
 
   done < videos.txt
