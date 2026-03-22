@@ -2,20 +2,31 @@ FROM jrottenberg/ffmpeg:6.0-alpine
 
 WORKDIR /app
 
-# Asennetaan python + pip
-RUN apk add --no-cache python3 py3-pip
+# Python + build tools + native deps streamlinkin riippuvuuksille
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    python3-dev \
+    build-base \
+    libxml2-dev \
+    libxslt-dev \
+    libffi-dev \
+    openssl-dev \
+    cargo \
+    rust
 
-# Asennetaan streamlink pipillä
-RUN pip3 install --no-cache-dir streamlink
+# Päivitä pip-työkalut ja asenna streamlink
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip3 install --no-cache-dir --prefer-binary "streamlink<7"
 
-# Kopioidaan tiedostot
+# Kopioi appin tiedostot
 COPY videos.txt .
 COPY start.sh .
 
-# Tehdään scriptistä ajettava
+# Tee scriptistä ajettava
 RUN chmod +x start.sh
 
-# Poistetaan ffmpeg default entrypoint
+# Poista ffmpeg-imagen oletus entrypoint
 ENTRYPOINT []
 
 # Käynnistys
