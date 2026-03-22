@@ -1,15 +1,12 @@
-FROM jrottenberg/ffmpeg:6.0-alpine
+FROM jrottenberg/ffmpeg:6.0-ubuntu
+
+RUN apt-get update && apt-get install -y curl
 
 WORKDIR /app
 
-# kopioi kaikki
-COPY . .
+COPY start.sh .
+COPY videos.txt .
 
-# anna oikeudet
 RUN chmod +x start.sh
 
-# 💥 tämä poistaa ffmpeg entrypointin (TÄRKEIN)
-ENTRYPOINT []
-
-# käynnistä scripti oikein
 CMD ["sh", "./start.sh"]
