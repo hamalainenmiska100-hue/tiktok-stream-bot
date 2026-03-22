@@ -2,8 +2,11 @@ FROM jrottenberg/ffmpeg:6.0-alpine
 
 WORKDIR /app
 
-# Asennetaan streamlink
-RUN apk add --no-cache streamlink
+# Asennetaan python + pip
+RUN apk add --no-cache python3 py3-pip
+
+# Asennetaan streamlink pipillä
+RUN pip3 install --no-cache-dir streamlink
 
 # Kopioidaan tiedostot
 COPY videos.txt .
